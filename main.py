@@ -66,7 +66,7 @@ def calculate_complexity_score(graph, debug=False):
             if debug : print(f"\tÉtat : {node}")
 
             # Calcul le nombre de nœuds
-            number_of_nodes = behavior_graph.number_of_nodes()
+            number_of_nodes = behavior_graph.number_of_nodes() - 1  # -1 pour enlever le nœud de début
             if debug : print(f"\t\tNombre de nœuds : {number_of_nodes}")
 
             # Calcul du degré moyen entrant
@@ -95,7 +95,7 @@ def calculate_complexity_score(graph, debug=False):
         if debug : print(f"\tChemin : {path}")
         if debug : print(f"\t\tScore : {score}")
 
-    average_score_paths = 1
+    average_score_paths = 0
     if len(scores) != 0 : average_score_paths = sum(scores) / len(scores)
     if debug : print(f"\tScore moyen : {average_score_paths}")
 
@@ -112,13 +112,13 @@ def calculate_complexity_score(graph, debug=False):
         if debug : print(f"\tCycle : {cycle}")
         if debug : print(f"\t\tScore : {score}")
 
-    average_score_cycles = 1
+    average_score_cycles = 0
     if len(scores) != 0 : average_score_cycles = sum(scores) / len(scores)
     if debug : print(f"\tScore moyen : {average_score_cycles}")
 
     # Score de complexité du graphe d'état
     if debug : print("Score de complexité du graphe d'état :")
-    complexity_score = average_score_paths * average_score_cycles
+    complexity_score = (average_score_paths + average_score_cycles) * (graph.number_of_nodes() - 2) # -2 pour enlever les nœuds de début et de fin
     if debug : print(f"\tScore : {complexity_score}")
 
     return complexity_score
