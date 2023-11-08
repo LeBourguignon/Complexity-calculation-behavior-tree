@@ -129,4 +129,4 @@ if __name__ == "__main__":
     # draw_graphs(goomba_state_graph())
 
     main_graph = goomba_state_graph()
-    print(calculate_complexity_score(main_graph, True))
+    calculate_complexity_score(main_graph, True)
