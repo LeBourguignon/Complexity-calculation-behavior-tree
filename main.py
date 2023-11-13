@@ -2,6 +2,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from goomba import goomba_state_graph
+from koopa_troopa_vert import koopa_troopa_vert_state_graph
+from koopa_paratroopa_vert import koopa_paratroopa_vert_state_graph
 
 
 
@@ -58,6 +60,10 @@ def find_all_paths(graph, start, end, path=[]):
 # Fonction pour calculer le score de complexité d'un graphe d'état
 def calculate_complexity_score(graph, debug=False):
 
+    # Calcul le nombre d'états
+    num_states = graph.number_of_nodes() - 2 # -2 pour enlever les nœuds de début et de fin
+    if debug : print(f"Nombre d'états : {num_states}")
+
     # Calcul du score de complexité de comportement pour chaque état
     if debug : print("Calcul du score de complexité de comportement pour chaque état :")
     for node in graph.nodes():
@@ -66,20 +72,21 @@ def calculate_complexity_score(graph, debug=False):
             if debug : print(f"\tÉtat : {node}")
 
             # Calcul le nombre de nœuds
-            number_of_nodes = behavior_graph.number_of_nodes() - 1  # -1 pour enlever le nœud de début
-            if debug : print(f"\t\tNombre de nœuds : {number_of_nodes}")
-
-            # Calcul du degré moyen entrant
-            in_degree = behavior_graph.in_degree()
-            average_in_degree = sum(dict(in_degree).values()) / number_of_nodes
-            if debug : print(f"\t\tDegré moyen entrant : {average_in_degree}")          
+            num_nodes = behavior_graph.number_of_nodes() - 1 # -1 pour enlever le nœud de début
+            if debug : print(f"\t\tNombre de nœuds : {num_nodes}")
 
             # Calcul le nombre de cycles
-            cycles = list(nx.simple_cycles(behavior_graph))
+            cycles = list(nx.recursive_simple_cycles(behavior_graph))
             num_cycles = len(cycles)
             if debug : print(f"\t\tNombre de cycles : {num_cycles}")
 
-            graph.nodes[node]['score'] = average_in_degree * num_cycles
+            # Calcul la longueur moyen des cycles
+            average_cycle_length = 0
+            if num_cycles != 0 : average_cycle_length = sum([len(cycle) for cycle in cycles]) / num_cycles
+            if debug : print(f"\t\tLongueur moyenne des cycles (score) : {average_cycle_length}")
+
+            # Calcul le score de complexité de comportement
+            graph.nodes[node]['score'] = average_cycle_length * num_nodes
             if debug : print(f"\t\tScore : {graph.nodes[node]['score']}")
 
     # Moyenne des sommes des scores de complexité de comportement par chemin
@@ -92,8 +99,6 @@ def calculate_complexity_score(graph, debug=False):
             if 'score' in graph.nodes[node]:
                 score += graph.nodes[node]['score']
         scores.append(score)
-        if debug : print(f"\tChemin : {path}")
-        if debug : print(f"\t\tScore : {score}")
 
     average_score_paths = 0
     if len(scores) != 0 : average_score_paths = sum(scores) / len(scores)
@@ -101,7 +106,7 @@ def calculate_complexity_score(graph, debug=False):
 
     # Moyenne des sommes des scores de complexité de comportement par cycle
     if debug : print("Moyenne des sommes des scores de complexité de comportement par cycle :")
-    cycles = list(nx.simple_cycles(graph))
+    cycles = list(nx.recursive_simple_cycles(graph))
     scores = []
     for cycle in cycles:
         score = 0
@@ -109,8 +114,6 @@ def calculate_complexity_score(graph, debug=False):
             if 'score' in graph.nodes[node]:
                 score += graph.nodes[node]['score']
         scores.append(score)
-        if debug : print(f"\tCycle : {cycle}")
-        if debug : print(f"\t\tScore : {score}")
 
     average_score_cycles = 0
     if len(scores) != 0 : average_score_cycles = sum(scores) / len(scores)
@@ -118,7 +121,7 @@ def calculate_complexity_score(graph, debug=False):
 
     # Score de complexité du graphe d'état
     if debug : print("Score de complexité du graphe d'état :")
-    complexity_score = (average_score_paths + average_score_cycles) * (graph.number_of_nodes() - 2) # -2 pour enlever les nœuds de début et de fin
+    complexity_score = (average_score_paths + average_score_cycles) * num_states
     if debug : print(f"\tScore : {complexity_score}")
 
     return complexity_score
