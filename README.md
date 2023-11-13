@@ -4,6 +4,7 @@ Programme en python permettant d'évaluer la complexité d'un arbre de comportem
 
 # Evaluation des ennemis dans Super Mario Bros.
 
+## Goomba
 ```
 Nombre d'états : 1
 Calcul du score de complexité de comportement pour chaque état :
@@ -18,7 +19,10 @@ Moyenne des sommes des scores de complexité de comportement par cycle :
         Score moyen : 0
 Score de complexité du graphe d'état :
         Score : 1.5
+```
 
+## Piranha Plant
+```
 Nombre d'états : 2
 Calcul du score de complexité de comportement pour chaque état :
         État : Piranha Plant In
@@ -37,7 +41,10 @@ Moyenne des sommes des scores de complexité de comportement par cycle :
         Score moyen : 2.0
 Score de complexité du graphe d'état :
         Score : 4.0
+```
 
+## Koopa Troopa Vert
+```
 Nombre d'états : 2
 Calcul du score de complexité de comportement pour chaque état :
         État : Koopa Troopa Vert
@@ -56,7 +63,10 @@ Moyenne des sommes des scores de complexité de comportement par cycle :
         Score moyen : 4.0
 Score de complexité du graphe d'état :
         Score : 7.4
+```
 
+## Koopa Paratroopa Vert
+```
 Nombre d'états : 3
 Calcul du score de complexité de comportement pour chaque état :
         État : Koopa Paratroopa Vert
