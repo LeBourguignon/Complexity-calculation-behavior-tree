@@ -129,7 +129,11 @@ def calculate_complexity_score(graph, debug=False):
 
 
 if __name__ == "__main__":
-    # draw_graphs(goomba_state_graph())
-
     main_graph = goomba_state_graph()
+    calculate_complexity_score(main_graph, True)
+
+    main_graph = koopa_troopa_vert_state_graph()
+    calculate_complexity_score(main_graph, True)
+
+    main_graph = koopa_paratroopa_vert_state_graph()
     calculate_complexity_score(main_graph, True)

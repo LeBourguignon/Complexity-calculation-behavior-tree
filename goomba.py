@@ -15,13 +15,15 @@ def goomba_state_graph():
     state_graph.add_edges_from([
         ("Début", "Goomba"),
         ("Goomba", "Fin", {"condition": "Collision chute"}),
-        ("Goomba", "Fin", {"condition": "Collision attaque mario"})
+        ("Goomba", "Fin", {"condition": "Collision saut mario"}),
+        ("Goomba", "Fin", {"condition": "Collision boule de feu mario"}),
+        ("Goomba", "Fin", {"condition": "Collision étoile mario"})
     ])
 
     return state_graph
 
 def goomba_behavior_graph_goomba():
-    # Crée un sous-graphe pour le comportement de Goomba
+    # Crée un sous-graphe pour le comportement
     behavior_graph = nx.MultiDiGraph()
 
     # Ajoute des nœuds pour chaque action
