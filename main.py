@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from goomba import goomba_state_graph
+from piranha_plant import piranha_plant_state_graph
 from koopa_troopa_vert import koopa_troopa_vert_state_graph
 from koopa_paratroopa_vert import koopa_paratroopa_vert_state_graph
 
@@ -121,7 +122,9 @@ def calculate_complexity_score(graph, debug=False):
 
     # Score de complexité du graphe d'état
     if debug : print("Score de complexité du graphe d'état :")
-    complexity_score = (average_score_paths + average_score_cycles) * num_states
+    # complexity_score = (average_score_paths + average_score_cycles) / 2
+    # complexity_score = (average_score_paths + average_score_cycles) * num_states
+    complexity_score = (average_score_paths + average_score_cycles) / 2 * num_states
     if debug : print(f"\tScore : {complexity_score}")
 
     return complexity_score
@@ -130,6 +133,9 @@ def calculate_complexity_score(graph, debug=False):
 
 if __name__ == "__main__":
     main_graph = goomba_state_graph()
+    calculate_complexity_score(main_graph, True)
+
+    main_graph = piranha_plant_state_graph()
     calculate_complexity_score(main_graph, True)
 
     main_graph = koopa_troopa_vert_state_graph()
