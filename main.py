@@ -1,4 +1,3 @@
-from analyze_graph import calculate_complexity_score
 from analyze_graph import analyze_state_graph
 
 from goomba import goomba_state_graph

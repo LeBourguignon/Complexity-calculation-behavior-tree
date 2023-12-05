@@ -15,81 +15,6 @@ def find_all_paths(graph, start, end, path=[]):
                 paths.append(newpath)
     return paths
 
-
-
-# Fonction pour calculer le score de complexité d'un graphe d'état
-def calculate_complexity_score(graph, debug=False):
-
-    # Calcul le nombre d'états
-    num_states = graph.number_of_nodes() - 2 # -2 pour enlever les nœuds de début et de fin
-    if debug : print(f"Nombre d'états : {num_states}")
-
-    # Calcul du score de complexité de comportement pour chaque état
-    if debug : print("Calcul du score de complexité de comportement pour chaque état :")
-    for node in graph.nodes():
-        if 'behavior' in graph.nodes[node]:
-            behavior_graph = graph.nodes[node]['behavior']
-            if debug : print(f"\tÉtat : {node}")
-
-            # Calcul le nombre de nœuds
-            num_nodes = behavior_graph.number_of_nodes() - 1 # -1 pour enlever le nœud de début
-            if debug : print(f"\t\tNombre de nœuds : {num_nodes}")
-
-            # Calcul le nombre de cycles
-            cycles = list(nx.recursive_simple_cycles(behavior_graph))
-            num_cycles = len(cycles)
-            if debug : print(f"\t\tNombre de cycles : {num_cycles}")
-
-            # Calcul la longueur moyen des cycles
-            average_cycle_length = 0
-            if num_cycles != 0 : average_cycle_length = sum([len(cycle) for cycle in cycles]) / num_cycles
-            if debug : print(f"\t\tLongueur moyenne des cycles (score) : {average_cycle_length}")
-
-            # Calcul le score de complexité de comportement
-            graph.nodes[node]['score'] = average_cycle_length * num_nodes
-            if debug : print(f"\t\tScore : {graph.nodes[node]['score']}")
-
-    # Moyenne des sommes des scores de complexité de comportement par chemin
-    if debug : print("Moyenne des sommes des scores de complexité de comportement par chemin :")
-    paths = find_all_paths(graph, 'Début', 'Fin')
-    scores = []
-    for path in paths:
-        score = 0
-        for node in path:
-            if 'score' in graph.nodes[node]:
-                score += graph.nodes[node]['score']
-        scores.append(score)
-
-    average_score_paths = 0
-    if len(scores) != 0 : average_score_paths = sum(scores) / len(scores)
-    if debug : print(f"\tScore moyen : {average_score_paths}")
-
-    # Moyenne des sommes des scores de complexité de comportement par cycle
-    if debug : print("Moyenne des sommes des scores de complexité de comportement par cycle :")
-    cycles = list(nx.recursive_simple_cycles(graph))
-    scores = []
-    for cycle in cycles:
-        score = 0
-        for node in cycle:
-            if 'score' in graph.nodes[node]:
-                score += graph.nodes[node]['score']
-        scores.append(score)
-
-    average_score_cycles = 0
-    if len(scores) != 0 : average_score_cycles = sum(scores) / len(scores)
-    if debug : print(f"\tScore moyen : {average_score_cycles}")
-
-    # Score de complexité du graphe d'état
-    if debug : print("Score de complexité du graphe d'état :")
-    # complexity_score = (average_score_paths + average_score_cycles) / 2
-    # complexity_score = (average_score_paths + average_score_cycles) * num_states
-    complexity_score = (average_score_paths + average_score_cycles) / 2 * num_states
-    if debug : print(f"\tScore : {complexity_score}")
-
-    return complexity_score
-
-#################################################################
-
 # Fonction permettant d'analyser un graphe d'état
 def analyze_state_graph(graph, debug=False):
     if debug : print("\tAnalyse du graphe d'état :")
@@ -161,7 +86,48 @@ def analyze_state_graph(graph, debug=False):
             if debug : print(f"\t\tÉtat : {node}")
 
             # Analyse le graphe de comportement
-            analyze_behavior_graph(behavior_graph, debug)
+            graph.nodes[node]['score'] = analyze_behavior_graph(behavior_graph, debug)
+
+    # Calcul du cumul des scores de complexité de comportement par chemin  
+    if debug : print("Calcul du cumul des scores de complexité de comportement par chemin :")
+    cumul_score_paths = 0
+    for path in paths:
+        score = 0
+        for node in path:
+            if 'score' in graph.nodes[node]:
+                score += graph.nodes[node]['score']
+        cumul_score_paths += score
+
+    if debug : print(f"\tScore cumulé : {cumul_score_paths}")
+
+    # Calcul de la moyenne des scores de complexité de comportement par chemin
+    average_score_paths = 0
+    if num_paths != 0 : average_score_paths = cumul_score_paths / num_paths
+    if debug : print(f"\tScore moyen : {average_score_paths}")
+
+    # Calcul du cumul des scores de complexité de comportement par cycle
+    if debug : print("Calcul du cumul des scores de complexité de comportement par cycle :")
+    cumul_score_cycles = 0
+    for cycle in cycles:
+        score = 0
+        for node in cycle:
+            if 'score' in graph.nodes[node]:
+                score += graph.nodes[node]['score']
+        cumul_score_cycles += score
+
+    if debug : print(f"\tScore cumulé : {cumul_score_cycles}")
+
+    # Calcul de la moyenne des scores de complexité de comportement par cycle
+    average_score_cycles = 0
+    if num_cycles != 0 : average_score_cycles = cumul_score_cycles / num_cycles
+    if debug : print(f"\tScore moyen : {average_score_cycles}")
+
+    # Score de complexité du graphe d'état
+    if debug : print("Score de complexité du graphe d'état :")
+    complexity_score = (cumul_score_paths + cumul_score_cycles) / (num_paths + num_cycles) / 2
+    if debug : print(f"\tScore : {complexity_score}")
+
+    return complexity_score
 
 
 
@@ -216,3 +182,9 @@ def analyze_behavior_graph(graph, debug=False):
     average_cycle_length = 0
     if num_cycles != 0 : average_cycle_length = sum([len(cycle) for cycle in cycles]) / num_cycles
     if debug : print(f"\t\t\tLongueur moyenne des cycles : {average_cycle_length}")
+
+
+    ### Calcul le score de complexité de comportement ###
+    score = num_cycles * average_cycle_length
+    if debug : print(f"\t\t\tScore de complexité de comportement : {score}")
+    return score
