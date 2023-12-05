@@ -88,7 +88,6 @@ def calculate_complexity_score(graph, debug=False):
 
     return complexity_score
 
-
 #################################################################
 
 # Fonction permettant d'analyser un graphe d'état
