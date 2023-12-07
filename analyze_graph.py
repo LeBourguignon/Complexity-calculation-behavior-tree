@@ -39,10 +39,16 @@ def analyze_state_graph(graph, debug=False):
     if debug : print(f"\t\tRayon : {radius}")
 
     # Calcul le diamètre du graphe d'état
-    graph_copy = graph.copy()
-    graph_copy.add_edge('Fin', 'Début')
     diameter = nx.diameter(graph_copy)
     if debug : print(f"\t\tDiamètre : {diameter}")
+
+    # Calcul le nombre de composantes connexes du graphe d'état
+    num_connected_components = nx.number_strongly_connected_components(graph_copy)
+    if debug : print(f"\t\tNombre de composantes connexes : {num_connected_components}")
+
+    # Calcul la complexité cyclomatique du graphe d'état
+    cyclomatic_complexity = graph_copy.size() - graph_copy.order() + num_connected_components
+    if debug : print(f"\t\tComplexité cyclomatique : {cyclomatic_complexity}")
 
 
     ### Analyse du graphe d'état ###
@@ -154,10 +160,16 @@ def analyze_behavior_graph(graph, debug=False):
     if debug : print(f"\t\t\tRayon : {radius}")
 
     # Calcul le diamètre du graphe de comportement
-    graph_copy = graph.copy()
-    graph_copy.remove_node('Début')
     diameter = nx.diameter(graph_copy)
     if debug : print(f"\t\t\tDiamètre : {diameter}")
+
+    # Calcul le nombre de composantes connexes du graphe de comportement
+    num_connected_components = nx.number_strongly_connected_components(graph_copy)
+    if debug : print(f"\t\t\tNombre de composantes connexes : {num_connected_components}")
+
+    # Calcul la complexité cyclomatique du graphe de comportement
+    cyclomatic_complexity = graph_copy.size() - graph_copy.order() + num_connected_components
+    if debug : print(f"\t\t\tComplexité cyclomatique : {cyclomatic_complexity}")
 
 
     ### Analyse du graphe de comportement ###
