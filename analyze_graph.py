@@ -92,50 +92,7 @@ def analyze_state_graph(graph, debug=False):
             if debug : print(f"\t\tÉtat : {node}")
 
             # Analyse le graphe de comportement
-            graph.nodes[node]['score'] = analyze_behavior_graph(behavior_graph, debug)
-
-    # Calcul du cumul des scores de complexité de comportement par chemin  
-    if debug : print("Calcul du cumul des scores de complexité de comportement par chemin :")
-    cumul_score_paths = 0
-    for path in paths:
-        score = 0
-        for node in path:
-            if 'score' in graph.nodes[node]:
-                score += graph.nodes[node]['score']
-        cumul_score_paths += score
-
-    if debug : print(f"\tScore cumulé : {cumul_score_paths}")
-
-    # Calcul de la moyenne des scores de complexité de comportement par chemin
-    average_score_paths = 0
-    if num_paths != 0 : average_score_paths = cumul_score_paths / num_paths
-    if debug : print(f"\tScore moyen : {average_score_paths}")
-
-    # Calcul du cumul des scores de complexité de comportement par cycle
-    if debug : print("Calcul du cumul des scores de complexité de comportement par cycle :")
-    cumul_score_cycles = 0
-    for cycle in cycles:
-        score = 0
-        for node in cycle:
-            if 'score' in graph.nodes[node]:
-                score += graph.nodes[node]['score']
-        cumul_score_cycles += score
-
-    if debug : print(f"\tScore cumulé : {cumul_score_cycles}")
-
-    # Calcul de la moyenne des scores de complexité de comportement par cycle
-    average_score_cycles = 0
-    if num_cycles != 0 : average_score_cycles = cumul_score_cycles / num_cycles
-    if debug : print(f"\tScore moyen : {average_score_cycles}")
-
-    # Score de complexité du graphe d'état
-    if debug : print("Score de complexité du graphe d'état :")
-    complexity_score = (cumul_score_paths + cumul_score_cycles) / (num_paths + num_cycles) / 2
-    if debug : print(f"\tScore : {complexity_score}")
-
-    return complexity_score
-
-
+            analyze_behavior_graph(behavior_graph, debug)
 
 # Fonction permettant d'analyser un graphe de comportement
 def analyze_behavior_graph(graph, debug=False):
@@ -194,9 +151,3 @@ def analyze_behavior_graph(graph, debug=False):
     average_cycle_length = 0
     if num_cycles != 0 : average_cycle_length = sum([len(cycle) for cycle in cycles]) / num_cycles
     if debug : print(f"\t\t\tLongueur moyenne des cycles : {average_cycle_length}")
-
-
-    ### Calcul le score de complexité de comportement ###
-    score = num_cycles * average_cycle_length
-    if debug : print(f"\t\t\tScore de complexité de comportement : {score}")
-    return score
